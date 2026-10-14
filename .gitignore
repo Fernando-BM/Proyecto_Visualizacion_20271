@@ -1,0 +1,74 @@
+# ==========================================
+# CMake (Salida de compilación y temporales)
+# ==========================================
+build/
+Build/
+bin/
+lib/
+out/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CMakeScripts/
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+install_manifest.txt
+
+# ==========================================
+# Archivos de Ejecución / Binarios
+# ==========================================
+*.exe
+*.out
+*.app
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+
+# ==========================================
+# Entornos de Desarrollo / IDEs
+# ==========================================
+
+# Visual Studio (MSVC)
+.vs/
+*.vcxproj.user
+*.sln.docstates
+x64/
+x86/
+[Dd]ebug/
+[Rr]elease/
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace
+
+# ==========================================
+# Dependencias / Manejadores de Paquetes
+# ==========================================
+# Descomenta si usas vcpkg o conan dentro del proyecto
+# vcpkg_installed/
+# .conan/
+
+# ==========================================
+# Sistema Operativo y Temporales
+# ==========================================
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+*.swp
+*~
