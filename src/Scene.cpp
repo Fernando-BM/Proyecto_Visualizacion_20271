@@ -28,8 +28,15 @@ void Scene::init(){
     m_shaderPrograms.push_back(m_shaderProgram);
 
     //Se inicializan todos los modelos a usar
-    Model* cubo = new Cubo(m_shaderPrograms[0],0);
-    m_models.push_back(cubo);
+    //Model* cubo = new Cubo(m_shaderPrograms[0],0);
+    //m_models.push_back(cubo);
+    Model* obj = new ImportedModel(m_shaderProgram, "obj/bunny.obj");    
+    //Model* obj = new ImportedModel(m_shaderProgram, "obj/car.obj");    
+    //Model* obj = new ImportedModel(m_shaderProgram, "obj/casa.obj");    
+    //Model* obj = new ImportedModel(m_shaderProgram, "obj/cat.obj");    
+    //Model* obj = new ImportedModel(m_shaderProgram, "obj/pescado.obj");    
+    //Model* obj = new ImportedModel(m_shaderProgram, "obj/Teapot.obj");    
+    m_models.push_back(obj);
 
 
     //Matriz de vista View Matrix
