@@ -26,7 +26,7 @@ public:
 
     void initGeometry() override;
     void init() override;
-    void renderModel(const glm::mat4& view, const glm::mat4& projection) override;
+    void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive) override;
     void updateModel(float deltaTime) override;
     void finish() override;
 };

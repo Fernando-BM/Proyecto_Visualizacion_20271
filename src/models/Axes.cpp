@@ -1,4 +1,4 @@
-#include "Axes.h"
+#include "models/Axes.h"
 
 void Axes::initGeometry(){
     // 6 vértices: posición (x,y,z) + color (r,g,b)
@@ -49,7 +49,7 @@ void Axes::init(){
     glBindVertexArray(0);
 }
 
-void Axes::renderModel(const glm::mat4& view, const glm::mat4& projection){
+void Axes::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum /*primitive*/){
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);
