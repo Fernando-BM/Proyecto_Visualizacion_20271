@@ -41,19 +41,9 @@ void Scene::init(){
     m_models.push_back(axes);
 
     
-    // Push en m_model posicion 1-6 los modelos
-    const char* archivosOBJ[] = {
-        "obj/bunny.obj",   // tecla 1
-        "obj/car.obj",     // tecla 2
-        "obj/casa.obj",    // tecla 3
-        "obj/cat.obj",     // tecla 4
-        "obj/pescado.obj", // tecla 5
-        "obj/Teapot.obj"   // tecla 6
-    };
-    for (const char* archivo : archivosOBJ) {
-        Model* obj = new ImportedModel(m_shaderProgram, archivo);
-        m_models.push_back(obj);
-    }
+    // m_models[1]: único OBJ cargado al inicio (bunny)
+    Model* obj = new ImportedModel(m_shaderProgram, "obj/bunny.obj");
+    m_models.push_back(obj);
 
     //Matriz de vista View Matrix
     //Posicion de la camara, centro de atencion, vector perpendicular de la Cámara
@@ -66,8 +56,24 @@ void Scene::init(){
 void Scene::render()  {
 
     Model* axes   = m_models[0];
-    //Modelo inicial   
-    Model* model1 = m_models[1]; 
+
+
+    // Archivos OBJ disponibles (tecla 1 a 6)
+    const char* archivosOBJ[] = {
+        "obj/bunny.obj",   // tecla 1
+        "obj/car.obj",     // tecla 2
+        "obj/casa.obj",    // tecla 3
+        "obj/cat.obj",     // tecla 4
+        "obj/pescado.obj", // tecla 5
+        "obj/Teapot.obj"   // tecla 6
+    };
+    const int NUM_OBJ = 6;
+
+    // Modelos ya cargados (nullptr = todavía no se ha cargado)
+    Model* cargados[NUM_OBJ] = {nullptr};
+    cargados[0] = m_models[1];     // el bunny ya se cargó en init()
+
+    Model* model1 = cargados[0];   // modelo que se muestra
 
     //Ciclo de Renderizado
     glEnable(GL_DEPTH_TEST);  // Prueba de profundidad
@@ -77,26 +83,30 @@ void Scene::render()  {
 
     m_cameraMovement = false;
     while(!glfwWindowShouldClose(m_window->getWindow())){
-        // ESC 
+        // Compute time  
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(m_window->getWindow(), true);
-        //ENTER
+
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ENTER) == GLFW_PRESS)
         {
             delete m_camera;
             m_camera = new OrbitCamera(glm::vec3(7.0f,4.0f,7.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0,1.0,0.0));
         }
 
-        // Selección del modelo con las teclas 1-6
-        for (size_t i = 1; i < m_models.size() && i <= 9; ++i) {
-            if (glfwGetKey(m_window->getWindow(), GLFW_KEY_1 + (int)(i - 1)) == GLFW_PRESS)
-                model1 = m_models[i];
+        // Selección del modelo con las teclas 1-6 (carga solo la primera vez)
+        for (int i = 0; i < NUM_OBJ; ++i) {
+            if (glfwGetKey(m_window->getWindow(), GLFW_KEY_1 + i) == GLFW_PRESS) {
+                if (cargados[i] == nullptr) {
+                    cargados[i] = new ImportedModel(m_shaderPrograms[0], archivosOBJ[i]);
+                    m_models.push_back(cargados[i]);
+                }
+                model1 = cargados[i];
+            }
         }
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        
         // se dibujan los modelos
         axes->renderModel(m_view, m_projection);
         model1->renderModel(m_view, m_projection);
@@ -115,9 +125,7 @@ void Scene::render()  {
             m_current = glm::vec2((float)currX,(float)currY);
             m_camera->rotate(m_last,m_current);
             m_camera->setPos(m_last,m_current);
-
         }
         m_view = m_camera->getMatrix();
     }
-
 }
