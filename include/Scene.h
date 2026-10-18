@@ -12,7 +12,9 @@
 #include "ShaderProgram.h"
 
 #include "Model.h"
+#include "ModelImporter.h"
 #include "models/Cubo.h"
+#include "models/ImportedModel.h"
 
 #include "OrbitCamera.h"
 
