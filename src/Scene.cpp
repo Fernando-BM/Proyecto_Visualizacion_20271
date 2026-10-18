@@ -39,6 +39,13 @@ void Scene::init(){
     m_models.push_back(obj);
 
 
+    // Los ejes usan su PROPIO ShaderProgram (~Model hace delete del shader)
+    ShaderProgram* axesShader = new ShaderProgram("shaders/vertex_shader.glsl","shaders/frag_shader.glsl");
+    m_shaderPrograms.push_back(axesShader);
+
+    Model* axes = new Axes(axesShader, 3.0f);
+    m_models.push_back(axes);
+
     //Matriz de vista View Matrix
     //Posicion de la camara, centro de atencion, vector perpendicular de la Cámara
     m_camera = new OrbitCamera(glm::vec3(7.0f,4.0f,7.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0,1.0,0.0));
@@ -74,14 +81,17 @@ void Scene::render()  {
 
         
         // se dibujan los modelos
-        model1->renderModel(m_view, m_projection);
-        
+        //model1->renderModel(m_view, m_projection);
+        for (Model* m : m_models)
+            m->renderModel(m_view, m_projection);
 
         // update models 
         glfwSwapBuffers(m_window->getWindow());
         glfwPollEvents();
 
-        model1->updateModel(0.7f);
+        //model1->updateModel(0.7f);
+        for (Model* m : m_models)
+            m->updateModel(0.7f);
         
         if (m_cameraMovement)
         {
