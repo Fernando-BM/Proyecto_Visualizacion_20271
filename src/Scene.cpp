@@ -37,7 +37,7 @@ void Scene::init(){
 
     
     //Push en m_model posicion 0 los ejes
-    Model* axes = new Axes(axesShader, 3.0f);
+    Model* axes = new Axes(axesShader, 1.5f);
     m_models.push_back(axes);
 
     
@@ -47,7 +47,7 @@ void Scene::init(){
 
     //Matriz de vista View Matrix
     //Posicion de la camara, centro de atencion, vector perpendicular de la Cámara
-    m_camera = new OrbitCamera(glm::vec3(7.0f,4.0f,7.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0,1.0,0.0));
+    m_camera = new OrbitCamera(glm::vec3(2.0f,1.2f,2.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0,1.0,0.0));
     m_view =  m_camera->getMatrix();
     //Matriz de projeccion
     m_projection = glm::perspective(glm::radians(45.0f), m_window->getAspectRation(), 0.1f, 100.0f);
@@ -91,8 +91,7 @@ void Scene::render()  {
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ENTER) == GLFW_PRESS)
         {
             delete m_camera;
-            m_camera = new OrbitCamera(glm::vec3(7.0f,4.0f,7.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0,1.0,0.0));
-        }
+            m_camera = new OrbitCamera(glm::vec3(2.0f,1.2f,2.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0,1.0,0.0));        }
 
         // Selección del modelo con las teclas 1-6 (carga solo la primera vez)
         for (int i = 0; i < NUM_OBJ; ++i) {
