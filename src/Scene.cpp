@@ -40,7 +40,8 @@ void Scene::init(){
 
 
     // Los ejes usan su PROPIO ShaderProgram (~Model hace delete del shader)
-    ShaderProgram* axesShader = new ShaderProgram("shaders/vertex_shader.glsl","shaders/frag_shader.glsl");
+    ShaderProgram* axesShader = new ShaderProgram("shaders/axes_vertex_shader.glsl",
+                                                    "shaders/axes_frag_shader.glsl");
     m_shaderPrograms.push_back(axesShader);
 
     Model* axes = new Axes(axesShader, 3.0f);
@@ -56,7 +57,7 @@ void Scene::init(){
 
 void Scene::render()  {
 
-    Model* model1 = m_models[0];
+    //Model* model1 = m_models[0];
 
     //Ciclo de Renderizado
     glEnable(GL_DEPTH_TEST);  // Prueba de profundidad
