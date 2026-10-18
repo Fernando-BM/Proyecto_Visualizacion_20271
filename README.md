@@ -9,5 +9,5 @@ cmake --build build
 ```
 Ejecutar:
 ```bash
-./build/3d
+./build/visualizador
 ```

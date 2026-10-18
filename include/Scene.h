@@ -17,6 +17,7 @@
 #include "models/ImportedModel.h"
 
 #include "OrbitCamera.h"
+#include "Axes.h"
 
 /**
  * @class Scene
