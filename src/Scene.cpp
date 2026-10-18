@@ -81,6 +81,7 @@ void Scene::render()  {
     glCullFace(GL_BACK);      // Culling de caras traseras
     glFrontFace(GL_CCW);      // Las caras frontales son las que tienen vértices en sentido antihorario
 
+    GLenum primitiva = GL_TRIANGLES; //primitiva default
     m_cameraMovement = false;
     while(!glfwWindowShouldClose(m_window->getWindow())){
         // Compute time  
@@ -103,13 +104,19 @@ void Scene::render()  {
                 model1 = cargados[i];
             }
         }
+        
+        //opciones para primitivas
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_P) == GLFW_PRESS) primitiva = GL_POINTS;
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_L) == GLFW_PRESS) primitiva = GL_LINES;
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_T) == GLFW_PRESS) primitiva = GL_TRIANGLES;
+
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // se dibujan los modelos
-        axes->renderModel(m_view, m_projection);
-        model1->renderModel(m_view, m_projection);
+        axes->renderModel(m_view, m_projection, GL_LINES); //primitiva para vertices
+        model1->renderModel(m_view, m_projection,primitiva);
 
         // update models 
         glfwSwapBuffers(m_window->getWindow());

@@ -77,18 +77,31 @@ void Cubo::init(){
 }
 
 
-void Cubo::renderModel(const glm::mat4& view, const glm::mat4& projection){
+void Cubo::renderModel(const glm::mat4& view, const glm::mat4& projection,GLenum primitive){
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);
     m_shaderProgram->setMat4x4("view", view);
     m_shaderProgram->setMat4x4("projection", projection);
 
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    switch (primitive) {
+        case GL_POINTS:
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_POINTS, 0, 8);
+            break;
+        case GL_LINES:
+            glBindVertexArray(VAO2);
+            glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+            break;
+        case GL_TRIANGLES:
+        default:
+            glBindVertexArray(VAO);
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+            glBindVertexArray(VAO2);
+            glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+            break;
+    }
 
-    glBindVertexArray(VAO2);
-    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
 }
 
 void Cubo::updateModel(float deltaTime ){    

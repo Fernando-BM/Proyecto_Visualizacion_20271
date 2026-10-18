@@ -1,4 +1,5 @@
 #include "models/ImportedModel.h"
+#include <vector>
 
 void ImportedModel::initGeometry(){
     ModelImporter modelImporter = ModelImporter();
@@ -18,20 +19,43 @@ void ImportedModel::initGeometry(){
 }
 
 void ImportedModel::init(){
+
+    /*Los modelos importados se guardan como una lista de triángulos sin índices.
+    Para dibujarlos con GL_LINES hace falta indicar qué pares de vértices forman 
+    cada arista, así que en init se construye un EBO con las tres aristas de cada 
+    triángulo (a‑b, b‑c, c‑a). En renderModel, según la primitiva recibida, 
+    se dibuja con glDrawElements (líneas) o glDrawArrays (puntos y triángulos). */
     glGenVertexArrays(1,&VAO);
     glGenBuffers(3, n_VBO);
+    glGenBuffers(1, &EBO);    // crea el EBO (heredado de Model)
 
     glBindVertexArray(VAO);
 
     if(n_vertices.size()>0){
         glBindBuffer(GL_ARRAY_BUFFER, n_VBO[0]); 
         glBufferData(GL_ARRAY_BUFFER, n_vertices.size() * sizeof(float), &n_vertices[0], GL_STATIC_DRAW); 
+        
+        //índices de aristas a partir de los triángulos.
+        // Cada triángulo t usa los vértices (3t, 3t+1, 3t+2) y genera
+        // 3 aristas: a-b, b-c, c-a
+        std::vector<GLuint> lineIdx;
+        lineIdx.reserve(numVertices * 2);
+        for(int t = 0; t < numVertices / 3; ++t){
+            GLuint a = 3*t, b = 3*t + 1, c = 3*t + 2;
+            lineIdx.insert(lineIdx.end(), {a, b,  b, c,  c, a});
+        }
+
+        // sube los índices al EBO (queda asociado al VAO activo)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, lineIdx.size() * sizeof(GLuint),
+                     lineIdx.data(), GL_STATIC_DRAW);
+    
     } else {
         std::cerr<<"VERTICES ERROR"<<std::endl;
     }
 }
 
-void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection){    
+void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive){    
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);
@@ -42,7 +66,13 @@ void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projecti
     glBindBuffer(GL_ARRAY_BUFFER, n_VBO[0]);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
-    glDrawArrays(GL_TRIANGLES, 0, numVertices);    
+
+    if(primitive == GL_LINES){
+        //
+        glDrawElements(GL_LINES, numVertices * 2, GL_UNSIGNED_INT, 0);
+    } else {
+        glDrawArrays(primitive, 0, numVertices);   // GL_POINTS o GL_TRIANGLES
+    }
 }
 
 void ImportedModel::updateModel(float deltaTime ){  
