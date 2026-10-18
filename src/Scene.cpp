@@ -23,29 +23,37 @@ void Scene::init(){
     m_window = new WindowGL();
     glfwSetWindowUserPointer(m_window->getWindow(), this);
     glfwSetMouseButtonCallback(m_window->getWindow(),Scene::mouseCallback);
-    //Inicializacion de ProgramShader 
-    ShaderProgram* m_shaderProgram = new ShaderProgram("shaders/vertex_shader.glsl","shaders/frag_shader.glsl");
-    m_shaderPrograms.push_back(m_shaderProgram);
-
-    //Se inicializan todos los modelos a usar
-    //Model* cubo = new Cubo(m_shaderPrograms[0],0);
-    //m_models.push_back(cubo);
-    Model* obj = new ImportedModel(m_shaderProgram, "obj/bunny.obj");    
-    //Model* obj = new ImportedModel(m_shaderProgram, "obj/car.obj");    
-    //Model* obj = new ImportedModel(m_shaderProgram, "obj/casa.obj");    
-    //Model* obj = new ImportedModel(m_shaderProgram, "obj/cat.obj");    
-    //Model* obj = new ImportedModel(m_shaderProgram, "obj/pescado.obj");    
-    //Model* obj = new ImportedModel(m_shaderProgram, "obj/Teapot.obj");    
-    m_models.push_back(obj);
+  
 
 
-    // Los ejes usan su PROPIO ShaderProgram (~Model hace delete del shader)
+    // Se inicializan shader de ejes y shader de modelos
     ShaderProgram* axesShader = new ShaderProgram("shaders/axes_vertex_shader.glsl",
                                                     "shaders/axes_frag_shader.glsl");
     m_shaderPrograms.push_back(axesShader);
 
+    ShaderProgram* m_shaderProgram = new ShaderProgram("shaders/vertex_shader.glsl",
+                                                        "shaders/frag_shader.glsl");
+    m_shaderPrograms.push_back(m_shaderProgram);
+
+    
+    //Push en m_model posicion 0 los ejes
     Model* axes = new Axes(axesShader, 3.0f);
     m_models.push_back(axes);
+
+    
+    // Push en m_model posicion 1-6 los modelos
+    const char* archivosOBJ[] = {
+        "obj/bunny.obj",   // tecla 1
+        "obj/car.obj",     // tecla 2
+        "obj/casa.obj",    // tecla 3
+        "obj/cat.obj",     // tecla 4
+        "obj/pescado.obj", // tecla 5
+        "obj/Teapot.obj"   // tecla 6
+    };
+    for (const char* archivo : archivosOBJ) {
+        Model* obj = new ImportedModel(m_shaderProgram, archivo);
+        m_models.push_back(obj);
+    }
 
     //Matriz de vista View Matrix
     //Posicion de la camara, centro de atencion, vector perpendicular de la Cámara
@@ -57,7 +65,9 @@ void Scene::init(){
 
 void Scene::render()  {
 
-    //Model* model1 = m_models[0];
+    Model* axes   = m_models[0];
+    //Modelo inicial   
+    Model* model1 = m_models[1]; 
 
     //Ciclo de Renderizado
     glEnable(GL_DEPTH_TEST);  // Prueba de profundidad
@@ -67,14 +77,20 @@ void Scene::render()  {
 
     m_cameraMovement = false;
     while(!glfwWindowShouldClose(m_window->getWindow())){
-        // Compute time  
+        // ESC 
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(m_window->getWindow(), true);
-
+        //ENTER
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ENTER) == GLFW_PRESS)
         {
             delete m_camera;
             m_camera = new OrbitCamera(glm::vec3(7.0f,4.0f,7.0f), glm::vec3(0.0f,0.5f,0.0f), glm::vec3(0.0,1.0,0.0));
+        }
+
+        // Selección del modelo con las teclas 1-6
+        for (size_t i = 1; i < m_models.size() && i <= 9; ++i) {
+            if (glfwGetKey(m_window->getWindow(), GLFW_KEY_1 + (int)(i - 1)) == GLFW_PRESS)
+                model1 = m_models[i];
         }
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -82,17 +98,15 @@ void Scene::render()  {
 
         
         // se dibujan los modelos
-        //model1->renderModel(m_view, m_projection);
-        for (Model* m : m_models)
-            m->renderModel(m_view, m_projection);
+        axes->renderModel(m_view, m_projection);
+        model1->renderModel(m_view, m_projection);
 
         // update models 
         glfwSwapBuffers(m_window->getWindow());
         glfwPollEvents();
 
-        //model1->updateModel(0.7f);
-        for (Model* m : m_models)
-            m->updateModel(0.7f);
+        axes->updateModel(0.7f);
+        model1->updateModel(0.7f);
         
         if (m_cameraMovement)
         {
