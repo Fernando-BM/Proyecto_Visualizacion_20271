@@ -1,6 +1,22 @@
 #include "models/ImportedModel.h"
 #include <vector>
 
+void ImportedModel::printModelInfo(){
+    // Extraer solo el nombre del archivo de la ruta
+    std::string pathStr(n_filePath);
+    size_t lastSlash = pathStr.find_last_of("/\\");
+    std::string fileName = (lastSlash == std::string::npos) ? pathStr : pathStr.substr(lastSlash + 1);
+
+    std::cout << "========================================" << std::endl;
+    std::cout << "      INFORMACIÓN DEL MODELO OBJ        " << std::endl;
+    std::cout << "========================================" << std::endl;
+    std::cout << "  Nombre del archivo : " << fileName << std::endl;
+    std::cout << "  Número de vértices : " << numVertices << std::endl;
+    std::cout << "  Mínimos (X, Y, Z) : [" << min[0] << ", " << min[1] << ", " << min[2] << "]" << std::endl;
+    std::cout << "  Máximos (X, Y, Z) : [" << max[0] << ", " << max[1] << ", " << max[2] << "]" << std::endl;
+    std::cout << "========================================" << std::endl << std::endl;
+}
+
 void ImportedModel::initGeometry(){
     ModelImporter modelImporter = ModelImporter();
     modelImporter.parseOBJ(n_filePath);
@@ -8,6 +24,8 @@ void ImportedModel::initGeometry(){
     n_vertices = modelImporter.getVertices();
     max = modelImporter.getMax();
     min = modelImporter.getMin();
+
+    printModelInfo();
 
     // Calcula para el bounding box
     glm::vec3 centro = glm::vec3((max[0]+min[0])*0.5f, (max[1]+min[1])*0.5f, (max[2]+min[2])*0.5f);
