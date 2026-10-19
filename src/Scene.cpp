@@ -92,6 +92,7 @@ void Scene::render()  {
         {
             delete m_camera;
             m_camera = new OrbitCamera(glm::vec3(2.0f,1.2f,2.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0,1.0,0.0));        }
+            
 
         // Selección del modelo con las teclas 1-6 (carga solo la primera vez)
         for (int i = 0; i < NUM_OBJ; ++i) {
@@ -104,11 +105,17 @@ void Scene::render()  {
             }
         }
         
-        //opciones para primitivas
+        //opciones key para primitivas
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_P) == GLFW_PRESS) primitiva = GL_POINTS;
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_L) == GLFW_PRESS) primitiva = GL_LINES;
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_T) == GLFW_PRESS) primitiva = GL_TRIANGLES;
 
+        
+        glm::vec3 ejeRotacion(0.0f); 
+        // Rotación: mantener X, Y o Z presionada para rotar sobre ese eje
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_X) == GLFW_PRESS) ejeRotacion.x = 1.0f;
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_Y) == GLFW_PRESS) ejeRotacion.y = 1.0f;
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_Z) == GLFW_PRESS) ejeRotacion.z = 1.0f;
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -121,8 +128,9 @@ void Scene::render()  {
         glfwSwapBuffers(m_window->getWindow());
         glfwPollEvents();
 
-        axes->updateModel(0.7f);
-        model1->updateModel(0.7f);
+
+        axes->updateModel(0.7f, glm::vec3(0.0f));  
+        model1->updateModel(0.7f, ejeRotacion);
         
         if (m_cameraMovement)
         {

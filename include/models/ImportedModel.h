@@ -38,7 +38,7 @@ public:
 
     void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive) override;
 
-    void updateModel(float deltaTime) override;
+    void updateModel(float deltaTime, const glm::vec3& axis) override;
 
     void finish() override;
 };

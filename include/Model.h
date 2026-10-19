@@ -72,9 +72,9 @@ public:
     /**
      * @brief Aplica transformaciones o animaciones 
      * @param deltaTime Referencia del tiempo transcurrido entre frames  
+     * @param axis Eje de rotacion
      */
-    virtual void updateModel(float deltaTime) = 0;
-
+    virtual void updateModel(float deltaTime, const glm::vec3& axis) = 0;
     /**
      * @brief Limpia recursos 
      */

@@ -61,8 +61,8 @@ void Axes::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenu
     glBindVertexArray(0);
 }
 
-void Axes::updateModel(float deltaTime){
-    // Por ahora no se hace nada
+void Axes::updateModel(float /*deltaTime*/, const glm::vec3& /*axis*/){
+    // Los ejes permanecen fijos
 }
 
 void Axes::finish(){
