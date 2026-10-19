@@ -75,8 +75,16 @@ void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projecti
     }
 }
 
-void ImportedModel::updateModel(float deltaTime ){  
-    (void)deltaTime;     
+void ImportedModel::updateModel(float deltaTime, const glm::vec3& axis){
+    // Sin tecla presionada no hay rotación
+    if (axis == glm::vec3(0.0f)) return;
+
+    // deltaTime se usa como ángulo en grados por frame
+    glm::mat4 rotacion = glm::rotate(glm::mat4(1.0f), glm::radians(deltaTime), axis);
+
+    // Se multiplica por la IZQUIERDA para rotar sobre los ejes del mundo.
+    // El modelo ya está centrado en el origen (initGeometry), así que gira sobre sí mismo.
+    m_model_mat = rotacion * m_model_mat;
 }
 
 void ImportedModel::finish(){
