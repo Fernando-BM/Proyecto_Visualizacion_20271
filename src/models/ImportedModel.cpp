@@ -79,6 +79,8 @@ void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projecti
     m_shaderProgram->setMat4x4("model", m_model_mat);
     m_shaderProgram->setMat4x4("view", view);
     m_shaderProgram->setMat4x4("projection", projection);
+    m_shaderProgram->setFloat("minY", min[1]);
+    m_shaderProgram->setFloat("maxY", max[1]);
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, n_VBO[0]);

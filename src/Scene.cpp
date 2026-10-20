@@ -98,7 +98,7 @@ void Scene::render()  {
         for (int i = 0; i < NUM_OBJ; ++i) {
             if (glfwGetKey(m_window->getWindow(), GLFW_KEY_1 + i) == GLFW_PRESS) {
                 if (cargados[i] == nullptr) {
-                    cargados[i] = new ImportedModel(m_shaderPrograms[0], archivosOBJ[i]);
+                    cargados[i] = new ImportedModel(m_shaderPrograms[1], archivosOBJ[i]);
                     m_models.push_back(cargados[i]);
                 }
                 model1 = cargados[i];
