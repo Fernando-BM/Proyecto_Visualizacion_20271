@@ -8,6 +8,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include "WindowGL.h"
 #include "ShaderProgram.h"
 
@@ -68,6 +72,12 @@ private:
     bool m_cameraMovement;
 
     OrbitCamera* m_camera;
+
+    float m_uiWidth;
+    
+    int m_panelWidth;
+    int m_viewPortWidth;
+    int m_viewPortHeight;
 
 public:
 

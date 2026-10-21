@@ -12,19 +12,18 @@ endif()
 
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
-
+include_directories(${PROJECT_SOURCE_DIR}/libs)
 
 # Encontrar bibliotecas
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 
-
 #Ejecutables
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE IMGUI_SOURCES ${PROJECT_SOURCE_DIR}/libs/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-
+add_executable(${PROJECT_NAME} ${SOURCES} ${IMGUI_SOURCES})
 
 # Librerías
 # Linkear las bibliotecas encontradas

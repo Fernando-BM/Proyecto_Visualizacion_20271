@@ -27,6 +27,7 @@ install_manifest.txt
 *.so
 *.dylib
 *.dll
+*.ini
 
 # ==========================================
 # Entornos de Desarrollo / IDEs
