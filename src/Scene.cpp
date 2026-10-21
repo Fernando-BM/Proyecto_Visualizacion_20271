@@ -40,10 +40,14 @@ void Scene::init(){
     Model* axes = new Axes(axesShader, 1.5f);
     m_models.push_back(axes);
 
+    //Push en m_model posicion 1 la malla
+    Model* grid = new Grid(m_shaderProgram, 1000, 1000, 0.3f, 20.0f);
+    m_models.push_back(grid);
     
     // m_models[1]: único OBJ cargado al inicio (bunny)
     Model* obj = new ImportedModel(m_shaderProgram, "obj/bunny.obj");
     m_models.push_back(obj);
+
 
     //Matriz de vista View Matrix
     //Posicion de la camara, centro de atencion, vector perpendicular de la Cámara
@@ -57,7 +61,6 @@ void Scene::render()  {
 
     Model* axes   = m_models[0];
 
-
     // Archivos OBJ disponibles (tecla 1 a 6)
     const char* archivosOBJ[] = {
         "obj/bunny.obj",   // tecla 1
@@ -67,11 +70,11 @@ void Scene::render()  {
         "obj/pescado.obj", // tecla 5
         "obj/Teapot.obj"   // tecla 6
     };
-    const int NUM_OBJ = 6;
+    const int NUM_OBJ = 6;    
 
     // Modelos ya cargados (nullptr = todavía no se ha cargado)
     Model* cargados[NUM_OBJ] = {nullptr};
-    cargados[0] = m_models[1];     // el bunny ya se cargó en init()
+    cargados[0] = m_models[2];     // el bunny ya se cargó en init()
 
     Model* model1 = cargados[0];   // modelo que se muestra
 
@@ -104,7 +107,9 @@ void Scene::render()  {
                 model1 = cargados[i];
             }
         }
-        
+
+        if (glfwGetKey(m_window->getWindow(), GLFW_KEY_7) == GLFW_PRESS) model1 = m_models[1];
+
         //opciones key para primitivas
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_P) == GLFW_PRESS) primitiva = GL_POINTS;
         if (glfwGetKey(m_window->getWindow(), GLFW_KEY_L) == GLFW_PRESS) primitiva = GL_LINES;

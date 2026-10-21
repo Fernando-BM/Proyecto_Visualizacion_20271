@@ -15,6 +15,7 @@
 #include "ModelImporter.h"
 #include "models/ImportedModel.h"
 #include "models/Axes.h"
+#include "models/Grid.h"
 
 #include "OrbitCamera.h"
 
