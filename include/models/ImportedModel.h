@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <string>
 #include "Model.h"
 #include "ModelImporter.h"
 
@@ -41,6 +43,8 @@ public:
     void updateModel(float deltaTime, const glm::vec3& axis) override;
 
     void finish() override;
+
+    void printModelInfo();
 };
 
 #endif // IMPORTED_MODEL_H

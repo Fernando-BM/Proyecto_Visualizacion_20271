@@ -22,7 +22,6 @@ install_manifest.txt
 *.out
 *.app
 *.o
-*.obj
 *.a
 *.lib
 *.so
