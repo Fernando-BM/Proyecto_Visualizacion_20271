@@ -87,16 +87,8 @@ void Scene::render()  {
 
     Model* axes   = m_models[0];
 
-    // Archivos OBJ disponibles (tecla 1 a 6)
-    const char* archivosOBJ[] = {
-        "obj/bunny.obj",   // tecla 1
-        "obj/car.obj",     // tecla 2
-        "obj/casa.obj",    // tecla 3
-        "obj/cat.obj",     // tecla 4
-        "obj/pescado.obj", // tecla 5
-        "obj/Teapot.obj"   // tecla 6
-    };
-    const int NUM_OBJ = 6;    
+    
+    const int NUM_OBJ = 7;    
 
     // Modelos ya cargados (nullptr = todavía no se ha cargado)
     Model* cargados[NUM_OBJ] = {nullptr};
@@ -196,11 +188,7 @@ void Scene::render()  {
             // Selección del modelo con las teclas 1-6 (carga solo la primera vez)
             for (int i = 0; i < NUM_OBJ; ++i) {
                 if (glfwGetKey(m_window->getWindow(), GLFW_KEY_1 + i) == GLFW_PRESS) {
-                    if (cargados[i] == nullptr) {
-                        cargados[i] = new ImportedModel(m_shaderPrograms[1], archivosOBJ[i]);
-                        m_models.push_back(cargados[i]);
-                    }
-                    model1 = cargados[i];
+                    model1 = m_models[i+1];;
                 }
             }
 
