@@ -24,6 +24,10 @@ private:
     std::vector<float> max;
     std::vector<float> min;
 
+    // Bandera para controlar la impresion
+    bool m_infoPrinted = false;
+    double m_lastRenderTime = 0.0;
+
 public:
     ImportedModel(ShaderProgram* program, const char *filePath)
         : Model(program),

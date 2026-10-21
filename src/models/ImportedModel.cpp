@@ -25,8 +25,6 @@ void ImportedModel::initGeometry(){
     max = modelImporter.getMax();
     min = modelImporter.getMin();
 
-    printModelInfo();
-
     // Calcula para el bounding box
     glm::vec3 centro = glm::vec3((max[0]+min[0])*0.5f, (max[1]+min[1])*0.5f, (max[2]+min[2])*0.5f);
     glm::vec3 dimension = glm::vec3((max[0]-min[0]), (max[1]-min[1]), (max[2]-min[2]));
@@ -73,7 +71,23 @@ void ImportedModel::init(){
     }
 }
 
-void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive){    
+void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive){        
+    double currentTime = glfwGetTime();    
+
+    // Si pasaron más de 0.1 segundos desde el último renderizado, 
+    // significa que el modelo estuvo oculto o deseleccionado.
+    if (currentTime - m_lastRenderTime > 0.1) {
+        m_infoPrinted = false;
+    }
+    m_lastRenderTime = currentTime;
+
+    // Si es la primera vez que se renderiza este modelo, imprimimos su informacion
+    if (!m_infoPrinted) {
+        printModelInfo();
+        // Se marca como impreso para no volver a ejecutarlo en frames futuros
+        m_infoPrinted = true;
+    }    
+
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);
