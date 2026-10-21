@@ -96,7 +96,7 @@ void Grid::InitIndices(std::vector<uint>& indices){
     }
 }
 
-void Grid::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive){
+void Grid::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive,bool /*print_info*/){
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);

@@ -49,7 +49,7 @@ void Axes::init(){
     glBindVertexArray(0);
 }
 
-void Axes::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum /*primitive*/){
+void Axes::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum /*primitive*/,bool /*print_info*/){
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);
