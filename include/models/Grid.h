@@ -42,7 +42,7 @@ public:
 
     void initGeometry() override;
     void init() override;
-    void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive) override;
+    void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive,bool print_info) override;
     void updateModel(float deltaTime, const glm::vec3& axis) override;
     void finish() override;
 };

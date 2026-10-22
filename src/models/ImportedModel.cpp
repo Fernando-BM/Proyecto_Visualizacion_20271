@@ -71,12 +71,12 @@ void ImportedModel::init(){
     }
 }
 
-void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive){        
-    double currentTime = glfwGetTime();    
+void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection,GLenum primitive,bool print_info){        
+    //double currentTime = glfwGetTime();    
 
     // Si pasaron más de 0.1 segundos desde el último renderizado, 
     // significa que el modelo estuvo oculto o deseleccionado.
-    if (currentTime - m_lastRenderTime > 0.1) {
+    /*if (currentTime - m_lastRenderTime > 0.1) {
         m_infoPrinted = false;
     }
     m_lastRenderTime = currentTime;
@@ -86,8 +86,11 @@ void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projecti
         printModelInfo();
         // Se marca como impreso para no volver a ejecutarlo en frames futuros
         m_infoPrinted = true;
-    }    
-
+    }  */  
+    if (print_info) {
+        printModelInfo();
+    }  
+    
     m_shaderProgram->use();
 
     m_shaderProgram->setMat4x4("model", m_model_mat);
@@ -123,3 +126,5 @@ void ImportedModel::updateModel(float deltaTime, const glm::vec3& axis){
 
 void ImportedModel::finish(){
 }
+
+
