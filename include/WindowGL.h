@@ -37,7 +37,7 @@ private:
 
 public: 
 
-    WindowGL(char * name=(char*)"Cubo", int major=4, int minor=1, int width=1280 , int height=720)
+    WindowGL(char * name=(char*)"Visualizador", int major=4, int minor=1, int width=1280 , int height=720)
             : m_name{name}
             , m_glfwMajor{major}
             , m_glfwMinor{minor}
