@@ -2,7 +2,12 @@
 
 Repositorio de proyectos para la materia de Visualización.
 
-Visualizador 3D en OpenGL que carga modelos `.obj`, los muestra como superficie, líneas o puntos, dibuja un eje coordenado en el origen y permite rotar el modelo desde una interfaz hecha con Dear ImGui.
+## Integrantes
+
+- Javier Alejandro Mancera Quiroz
+- Bernal Martínez Fernando
+
+Visualizador 3D en OpenGL 4.1 (core) que carga modelos `.obj`, los muestra como superficie, líneas o puntos, dibuja un eje coordenado en el origen y permite rotar el modelo desde una interfaz hecha con Dear ImGui.
 
 ---
 
@@ -46,7 +51,7 @@ Al iniciar se muestra el conejo junto con los ejes coordenados (X, Y, Z) dibujad
 
 | Sección | Control | Descripción |
 |---|---|---|
-| Modelo | Lista desplegable | Selecciona el modelo a mostrar: Conejo, Carro, Casa, Gato, Pescado o Tetera. |
+| Modelo | Lista desplegable | Selecciona el modelo a mostrar: Conejo, Carro, Casa, Gato, Pescado, Tetera o Función. |
 | Modo de dibujo | Triángulos | Dibuja la superficie del modelo (`GL_TRIANGLES`). |
 | Modo de dibujo | Líneas | Dibuja las aristas de la malla (`GL_LINES`). |
 | Modo de dibujo | Puntos | Dibuja la nube de vértices (`GL_POINTS`). |
@@ -54,13 +59,25 @@ Al iniciar se muestra el conejo junto con los ejes coordenados (X, Y, Z) dibujad
 | Rotación | Botón **Eje Y** | Rota el modelo sobre el eje Y. |
 | Rotación | Botón **Eje Z** | Rota el modelo sobre el eje Z. |
 
-### Cámara y teclado
+### Teclado y mouse
 
-| Entrada | Acción |
+Además del panel, el programa se controla con el teclado:
+
+| Tecla | Acción |
 |---|---|
-| Clic izquierdo + arrastrar | Mueve la cámara orbital alrededor del modelo. |
+| `T` | Modo de dibujo **Triángulos** (`GL_TRIANGLES`): muestra la superficie del modelo. |
+| `L` | Modo de dibujo **Líneas** (`GL_LINES`): dibuja las aristas de la malla. |
+| `P` | Modo de dibujo **Puntos** (`GL_POINTS`): dibuja la nube de vértices. |
+| `1` a `7` | Cambian de modelo: 1 Conejo, 2 Carro, 3 Casa, 4 Gato, 5 Pescado, 6 Tetera, 7 Función. |
+| `X` | Rota el modelo sobre el eje X. |
+| `Y` | Rota el modelo sobre el eje Y. |
+| `Z` | Rota el modelo sobre el eje Z. |
 | `Enter` | Reinicia la cámara a su posición inicial. |
 | `Esc` | Cierra el programa. |
+
+| Mouse | Acción |
+|---|---|
+| Clic izquierdo + arrastrar | Mueve la cámara orbital alrededor del modelo. |
 
 > El clic sobre el panel de herramientas no mueve la cámara.
 
