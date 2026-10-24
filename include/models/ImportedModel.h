@@ -26,10 +26,6 @@ private:
     std::vector<float> m_min;
     // Cantidad de vertices
     int numVertices;    
-    // Bandera para controlar la impresion de la informacion
-    bool m_infoPrinted = false;
-    // Ultimo registro de tiempo de renderizado
-    double m_lastRenderTime = 0.0;
 
 public:
     ImportedModel(ShaderProgram* program, const char *filePath)
