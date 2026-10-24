@@ -4,7 +4,7 @@ Repositorio de proyectos para la materia de Visualización.
 
 ## Integrantes
 
-- Javier Alejandro Mancera Quiroz
+- Mancera Quiroz Javier Alejandro 
 - Bernal Martínez Fernando
 
 Visualizador 3D en OpenGL 4.1 (core) que carga modelos `.obj`, los muestra como superficie, líneas o puntos, dibuja un eje coordenado en el origen y permite rotar el modelo desde una interfaz hecha con Dear ImGui.

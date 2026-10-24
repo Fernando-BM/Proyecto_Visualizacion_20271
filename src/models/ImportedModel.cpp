@@ -1,9 +1,8 @@
 #include "models/ImportedModel.h"
-#include <vector>
 
 void ImportedModel::printModelInfo(){
-    // Extraer solo el nombre del archivo de la ruta
-    std::string pathStr(n_filePath);
+    // Extrae solo el nombre del archivo de la ruta
+    std::string pathStr(m_filePath);
     size_t lastSlash = pathStr.find_last_of("/\\");
     std::string fileName = (lastSlash == std::string::npos) ? pathStr : pathStr.substr(lastSlash + 1);
 
@@ -12,119 +11,102 @@ void ImportedModel::printModelInfo(){
     std::cout << "========================================" << std::endl;
     std::cout << "  Nombre del archivo : " << fileName << std::endl;
     std::cout << "  Número de vértices : " << numVertices << std::endl;
-    std::cout << "  Mínimos (X, Y, Z) : [" << min[0] << ", " << min[1] << ", " << min[2] << "]" << std::endl;
-    std::cout << "  Máximos (X, Y, Z) : [" << max[0] << ", " << max[1] << ", " << max[2] << "]" << std::endl;
+    std::cout << "  Mínimos (X, Y, Z) : [" << m_min[0] << ", " << m_min[1] << ", " << m_min[2] << "]" << std::endl;
+    std::cout << "  Máximos (X, Y, Z) : [" << m_max[0] << ", " << m_max[1] << ", " << m_max[2] << "]" << std::endl;
     std::cout << "========================================" << std::endl << std::endl;
 }
 
 void ImportedModel::initGeometry(){
     ModelImporter modelImporter = ModelImporter();
-    modelImporter.parseOBJ(n_filePath);
+    // Parser del archivo obj
+    modelImporter.parseOBJ(m_filePath);
+
     numVertices = modelImporter.getNumVertices();
-    n_vertices = modelImporter.getVertices();
-    max = modelImporter.getMax();
-    min = modelImporter.getMin();
+    m_vertices = modelImporter.getVertices();
+    m_max = modelImporter.getMax();
+    m_min = modelImporter.getMin();
 
-    // Calcula para el bounding box
-    glm::vec3 centro = glm::vec3((max[0]+min[0])*0.5f, (max[1]+min[1])*0.5f, (max[2]+min[2])*0.5f);
-    glm::vec3 dimension = glm::vec3((max[0]-min[0]), (max[1]-min[1]), (max[2]-min[2]));
-    float escalaFactor = 1.0f/(float)(std::max({dimension.x, dimension.y, dimension.z}));
-    glm::mat4 escalamiento = glm::scale(glm::mat4(1.0f), glm::vec3(escalaFactor));
+    // Calcula bounding box
+    glm::vec3 center = glm::vec3((m_max[0] + m_min[0]) * 0.5f, (m_max[1] + m_min[1]) * 0.5f, (m_max[2] + m_min[2]) * 0.5f);
+    glm::vec3 dimension = glm::vec3((m_max[0] - m_min[0]), (m_max[1] - m_min[1]), (m_max[2] - m_min[2]));
+    float scaleFactor = 1.0f/(float)(std::max({dimension.x, dimension.y, dimension.z}));
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scaleFactor));
 
-    m_model_mat = glm::translate(escalamiento, -centro);
+    // Centra el modelo al origen y aplica escalamiento
+    m_model_mat = glm::translate(scaleMatrix, -center);
 }
 
 void ImportedModel::init(){
 
-    /*Los modelos importados se guardan como una lista de triángulos sin índices.
-    Para dibujarlos con GL_LINES hace falta indicar qué pares de vértices forman 
-    cada arista, así que en init se construye un EBO con las tres aristas de cada 
-    triángulo (a‑b, b‑c, c‑a). En renderModel, según la primitiva recibida, 
-    se dibuja con glDrawElements (líneas) o glDrawArrays (puntos y triángulos). */
+    // Genera identificadores
     glGenVertexArrays(1,&VAO);
-    glGenBuffers(3, n_VBO);
-    glGenBuffers(1, &EBO);    // crea el EBO (heredado de Model)
+    glGenBuffers(1, &VBO);
 
+    // Vincula VAO
     glBindVertexArray(VAO);
 
-    if(n_vertices.size()>0){
-        glBindBuffer(GL_ARRAY_BUFFER, n_VBO[0]); 
-        glBufferData(GL_ARRAY_BUFFER, n_vertices.size() * sizeof(float), &n_vertices[0], GL_STATIC_DRAW); 
-        
-        //índices de aristas a partir de los triángulos.
-        // Cada triángulo t usa los vértices (3t, 3t+1, 3t+2) y genera
-        // 3 aristas: a-b, b-c, c-a
-        std::vector<GLuint> lineIdx;
-        lineIdx.reserve(numVertices * 2);
-        for(int t = 0; t < numVertices / 3; ++t){
-            GLuint a = 3*t, b = 3*t + 1, c = 3*t + 2;
-            lineIdx.insert(lineIdx.end(), {a, b,  b, c,  c, a});
-        }
-
-        // sube los índices al EBO (queda asociado al VAO activo)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, lineIdx.size() * sizeof(GLuint),
-                     lineIdx.data(), GL_STATIC_DRAW);
+    if(m_vertices.size() > 0)
+    {
+        // Carga los vertices en el VBO
+        glBindBuffer(GL_ARRAY_BUFFER, VBO); 
+        glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_STATIC_DRAW);                 
     
     } else {
-        std::cerr<<"VERTICES ERROR"<<std::endl;
+        std::cerr << "[ImportedModel Error] Buffer de vertices esta vacío: " << m_filePath <<std::endl;
     }
+
+    // Desvincula VAO
+    glBindVertexArray(0);
 }
 
-void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection,GLenum primitive,bool print_info){        
-    //double currentTime = glfwGetTime();    
-
-    // Si pasaron más de 0.1 segundos desde el último renderizado, 
-    // significa que el modelo estuvo oculto o deseleccionado.
-    /*if (currentTime - m_lastRenderTime > 0.1) {
-        m_infoPrinted = false;
-    }
-    m_lastRenderTime = currentTime;
-
-    // Si es la primera vez que se renderiza este modelo, imprimimos su informacion
-    if (!m_infoPrinted) {
-        printModelInfo();
-        // Se marca como impreso para no volver a ejecutarlo en frames futuros
-        m_infoPrinted = true;
-    }  */  
-    if (print_info) {
+void ImportedModel::renderModel(const glm::mat4& view, const glm::mat4& projection, int primitive, bool printInfo){        
+    // Imprime la informacion del archivo obj
+    if (printInfo) 
+    {
         printModelInfo();
     }  
-    
+
+    // Activa programa del shader
     m_shaderProgram->use();
 
+    // Carga matriz de modelo
     m_shaderProgram->setMat4x4("model", m_model_mat);
+    // Carga matriz de vista
     m_shaderProgram->setMat4x4("view", view);
+    // Carga matriz de proyeccion
     m_shaderProgram->setMat4x4("projection", projection);
-    m_shaderProgram->setFloat("minY", min[1]);
-    m_shaderProgram->setFloat("maxY", max[1]);
+    // Carga el valor minimo y
+    m_shaderProgram->setFloat("minY", m_min[1]);
+    // Carga el valor maximo y
+    m_shaderProgram->setFloat("maxY", m_max[1]);
 
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, n_VBO[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    if(primitive == GL_LINES){
-        //
-        glDrawElements(GL_LINES, numVertices * 2, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(primitive, 0, numVertices);   // GL_POINTS o GL_TRIANGLES
-    }
+    // Pinta modelo obj con una primitiva (triangulos, lineas o puntos)
+    glDrawArrays(primitive, 0, numVertices);    
+
+    glBindVertexArray(0);
 }
 
-void ImportedModel::updateModel(float deltaTime, const glm::vec3& axis){
-    // Sin tecla presionada no hay rotación
+void ImportedModel::updateModel(float deltaTime, const glm::vec3& axis)
+{
+    // Sin tecla presionada no hay rotacion
     if (axis == glm::vec3(0.0f)) return;
 
-    // deltaTime se usa como ángulo en grados por frame
+    // deltaTime se usa como angulo en grados por frame
     glm::mat4 rotacion = glm::rotate(glm::mat4(1.0f), glm::radians(deltaTime), axis);
 
-    // Se multiplica por la IZQUIERDA para rotar sobre los ejes del mundo.
-    // El modelo ya está centrado en el origen (initGeometry), así que gira sobre sí mismo.
+    // Multiplica por la izquierda para rotar sobre los ejes, girando sobre si mismo
     m_model_mat = rotacion * m_model_mat;
 }
 
-void ImportedModel::finish(){
+void ImportedModel::finish()
+{
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 

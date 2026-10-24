@@ -7,13 +7,16 @@
 
 /**
  * @class Axes
- * @brief Eje coordenado (X rojo, Y verde, Z azul) dibujado con GL_LINES
+ * @brief Clase para modelar los ejes coordenados (X, Y, Z)
  */
 class Axes : public Model
 {
 private:
-    std::vector<GLfloat> m_vertices;  // x,y,z,r,g,b por vértice
-    std::vector<GLuint>  m_indices;   // cada pareja = una arista
+    // Coleccion de vertices que contienen (x,y,z,r,g,b)
+    GLfloat m_vertices[36];
+    // Coleccion de indices
+    GLuint m_indexes[6];  
+    // Tamanio de cada eje
     float m_length;
 
 public:
@@ -26,7 +29,7 @@ public:
 
     void initGeometry() override;
     void init() override;
-    void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive,bool print_info) override;
+    void renderModel(const glm::mat4& view, const glm::mat4& projection, int primitive, bool printInfo) override;
     void updateModel(float deltaTime, const glm::vec3& axis) override;
     void finish() override;
 };

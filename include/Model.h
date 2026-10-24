@@ -66,8 +66,9 @@ public:
      * @param view Matriz de vista 
      * @param projection Matriz de proyeccion 
      * @param primitive Tipo de primitiva a renderizar (GL_POINTS, GL_LINES o GL_TRIANGLES)
+     * @param printInfo Estado de la impresion de informacion
      */
-    virtual void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive, bool print_info) = 0;
+    virtual void renderModel(const glm::mat4& view, const glm::mat4& projection, int primitive, bool printInfo) = 0;
 
     /**
      * @brief Aplica transformaciones o animaciones 

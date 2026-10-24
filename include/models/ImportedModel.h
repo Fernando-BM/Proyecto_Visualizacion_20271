@@ -6,49 +6,49 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+
 #include "Model.h"
 #include "ModelImporter.h"
 
-#define num_VBOs 3
-
+/**
+ * @class ImportedModel
+ * @brief Clase para modelar un modelo OBJ
+ */
 class ImportedModel: public Model{
 private:
-    const char * n_filePath;
-    int numVertices;
-
-    GLuint n_VBO[num_VBOs];
-
-    std::vector<float> n_vertices;
-
-    // Arreglos para la bounding box
-    std::vector<float> max;
-    std::vector<float> min;
-
-    // Bandera para controlar la impresion
+    // Ruta del archivo obj
+    const char * m_filePath;    
+    // Vertices recuperados
+    std::vector<float> m_vertices;
+    // Valores maximos (x,y,z)
+    std::vector<float> m_max;
+    // Valores minimos (x,y,z)
+    std::vector<float> m_min;
+    // Cantidad de vertices
+    int numVertices;    
+    // Bandera para controlar la impresion de la informacion
     bool m_infoPrinted = false;
+    // Ultimo registro de tiempo de renderizado
     double m_lastRenderTime = 0.0;
 
 public:
     ImportedModel(ShaderProgram* program, const char *filePath)
-        : Model(program),
-        n_filePath{filePath}
+        : Model(program), m_filePath{filePath}
     {
         initGeometry();
-
         init();
     }
 
     void initGeometry() override;
-
     void init() override;
-
-    void renderModel(const glm::mat4& view, const glm::mat4& projection, GLenum primitive,bool print_info) override;
-
+    void renderModel(const glm::mat4& view, const glm::mat4& projection, int primitive, bool printInfo) override;
     void updateModel(float deltaTime, const glm::vec3& axis) override;
-
     void finish() override;
 
+    /**
+     * @brief Imprime la informacion del archivo obj (nombre, numero de vertices, maximos (x,y,z) y minimos (x,y,z))
+     */
     void printModelInfo();
 };
 
-#endif // IMPORTED_MODEL_H
+#endif
